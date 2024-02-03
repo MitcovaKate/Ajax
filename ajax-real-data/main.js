@@ -1,13 +1,18 @@
- let city
-function chooseCity(selectedCity) {
-          console.log(selectedCity)
-          city=selectedCity
-                                  }
 const key="6adea21c1fc0a56d8b17ab716f6812eb"
-const CURRENT_DATA_URL=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=6adea21c1fc0a56d8b17ab716f6812eb`
+ let CURRENT_DATA_URL
 
 
-function createRadioButtons() {
+//  get the result of choosen city from createRadioButtons()
+
+ function chooseCity(selectedCity) {
+         let city= selectedCity 
+         return CURRENT_DATA_URL=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=6adea21c1fc0a56d8b17ab716f6812eb`
+        } 
+
+      
+      //  create the buttons
+
+     function createRadioButtons() {
      const elements = ["Chisinau", "Paris", "New York"]
      const inputs = document.getElementById("inputs")
 
@@ -37,10 +42,20 @@ function createRadioButtons() {
 
 createRadioButtons();
 
+// clear the div class="weather"
 
+function clearWeatherDiv() {
+  const weatherDiv = document.querySelector('.weather');
+  weatherDiv.innerHTML = ''
+}
+
+// get the data
 
 function loadWeatherData()
 {
+ 
+    clearWeatherDiv()
+
   let xml=new XMLHttpRequest()
   xml.open("GET",CURRENT_DATA_URL)
   xml.onload =function(){ 
@@ -64,14 +79,24 @@ p.innerText="wind speed: "+wind+ "m/s"
 let img=document.createElement('img')
 img.src=`http://openweathermap.org/img/wn/${icon}2x.png`
 
-
   html.append(h1)
   html.append(h2)
   html.append(p)
   html.append(img)
   document.querySelector('.weather').append(html)
+
  }
  
 xml.send()
- 
+
 }
+
+
+
+// set the timer to reload the loadWeatherData()
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => {
+  startButton.disabled = true
+  setInterval(loadWeatherData, 10000)
+}
+)
