@@ -12,14 +12,15 @@ const getProgrammingLanguagesList=()=>{
         let parser=new DOMParser()
         let doc=parser.parseFromString(response,'text/html')
 
-     let anchors=doc.querySelectorAll('div.div-col ul li a')
-      languages=[...anchors].map(a => {
-       return {
+    let anchors=doc.querySelectorAll('div.div-col ul li a')
+        languages=[...anchors].map(a => {
+        return {
               name:a.innerHTML,
               url:a.href.replace("http://127.0.0.1:5500","https://en.wikipedia.org")
-       }
+         }
        
-      })
+      }
+      )
 }
 xml.send()
 
@@ -67,6 +68,8 @@ const filterProgrammingLanguages=(e)=>{
   }
 
 }
+
+
 let page=[]
 
 
@@ -74,33 +77,41 @@ let page=[]
 const getProgrammingDescription=(e)=>{
 
 e.preventDefault(); 
-
+let results=document.getElementById('DescDiv')
 const clickedLink = e.target;
 const linkUrl = clickedLink.href;
 console.log(linkUrl)
  let xml= new XMLHttpRequest()
       xml.open('GET',`${linkUrl}`)
 
-    xml.onload=()=>{
-       let response= xml.responseText
-        let parser=new DOMParser()
-       let doc=parser.parseFromString(response,'text/html')
-console.log(doc)
-      let anchor=doc.querySelectorAll('div.mw-body-content p a')
-  page=[...anchor].map(a => {
+      xml.onload=()=>{
+      let response= xml.responseText
+      let parser=new DOMParser()
+      let doc=parser.parseFromString(response,'text/html')
+       console.log(doc)
+      let anchor=doc.querySelectorAll('div.mw-content-ltr p')
+    page=[...anchor]
+               .splice(0, 2)
+                .map(s => {
      return {
-            name:a.innerHTML,
-             url:a.href.replace("http://127.0.0.1:5500","https://en.wikipedia.org")
-      }
-        
+            name:s.innerHTML,
+           }
     
     })
 
      console.log(anchor)  
-   
+     let dropdownUL=document.createElement('div')
+     dropdownUL.className='container-md'
 
-    
-       
+    page.forEach(el => {
+   dropdownUL.append(document.createElement('p'))
+  dropdownUL.lastElementChild.append(document.createElement('span'))
+  dropdownUL.lastElementChild.firstElementChild.innerHTML=el.name
+ })
+
+ results.append(dropdownUL)
+
+ 
 }
  xml.send()
  
